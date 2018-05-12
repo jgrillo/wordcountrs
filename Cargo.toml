@@ -1,16 +1,12 @@
 [package]
 name = "wordcountrs"
-description = "A simple stateless wordcount service."
-readme = "README.md"
-license = "MIT"
-repository = "https://github.com/jgrillo/wordcountrs"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Jesse C. Grillo <jesse.grillo@gmail.com>"]
 
 [dependencies]
-rocket = "0.3.*"
-rocket_codegen = "0.3.*"
-rocket_contrib = "0.3.*"
+actix = "0.5.*"
+actix-web = "0.6.*"
 serde = "1.0.*"
 serde_derive = "1.0.*"
 serde_json = "1.0.*"
+env_logger = "0.5.*"
