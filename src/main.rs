@@ -1,28 +1,27 @@
-
 extern crate actix_web;
 
-extern crate serde;
-extern crate serde_json;
+extern crate bytes;
 
 extern crate env_logger;
 
 extern crate futures;
 
-extern crate bytes;
-
 #[macro_use]
 extern crate serde_derive;
+
+extern crate serde;
+extern crate serde_json;
 
 use actix_web::{server, App, http::Method, Error, HttpRequest, HttpResponse, HttpMessage,
                 AsyncResponder, Body};
 use actix_web::middleware::Logger;
 
+use bytes::Bytes;
+
 use env_logger::{Builder, Target};
 
 use futures::Future;
 use futures::stream::once;
-
-use bytes::Bytes;
 
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -78,13 +77,9 @@ fn main() {
     }
     env_logger_builder.init();
 
-    server::new(
-        || App::new()
-            .middleware(Logger::default())
-            .resource(
-                "/words",
-                |r| r.method(Method::POST).f(handle_words)
-            )
+    server::new(|| App::new()
+        .middleware(Logger::default())
+        .resource("/words", |r| r.method(Method::POST).f(handle_words))
     )
         .bind("127.0.0.1:8000")
         .expect("could not bind to 127.0.0.1:8000")
