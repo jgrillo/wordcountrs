@@ -30,7 +30,6 @@ or
 $ wrk -c 8 -t 8 -d 60s --latency --timeout 60s -s perf_test.lua http://localhost:8000/words
 ```
 
-
 To make a flamegraph use *perf*:
 
 ```
