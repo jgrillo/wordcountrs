@@ -12,6 +12,8 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 
+extern crate hashbrown;
+
 use actix_web::{server, App, http::Method, Error, HttpRequest, HttpResponse, HttpMessage,
                 AsyncResponder, Body};
 use actix_web::middleware::Logger;
@@ -23,8 +25,9 @@ use env_logger::{Builder, Target};
 use futures::Future;
 use futures::stream::once;
 
+use hashbrown::HashMap;
+
 use std::borrow::Cow;
-use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 struct Words<'a> {
@@ -35,12 +38,12 @@ struct Words<'a> {
 #[derive(Serialize, Debug)]
 struct Counts<'a> {
     #[serde(borrow)]
-    counts: HashMap<&'a str, u32>
+    counts: &'a HashMap<&'a str, u32>
 }
 
 fn count_words<'a>(body: &'a Bytes) -> Result<Bytes, Error> {
     let words: Words<'a> = serde_json::from_slice(body.as_ref())?;
-    let counts = words.words
+    let counts = &words.words
         .iter()
         .fold(HashMap::default(),
               |mut counts, word| {
@@ -69,7 +72,6 @@ fn handle_words(req: &HttpRequest) -> Box<Future<Item=HttpResponse, Error=Error>
 }
 
 fn main() {
-    std::env::set_var("RUST_LOG", "actix_web=info");
     let mut env_logger_builder = Builder::new();
     env_logger_builder.target(Target::Stdout);
     if std::env::var("RUST_LOG").is_ok() {
